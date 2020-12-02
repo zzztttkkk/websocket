@@ -486,7 +486,7 @@ func TestDialExtraTokensInRespHeaders(t *testing.T) {
 		challengeKey := r.Header.Get("Sec-Websocket-Key")
 		w.Header().Set("Upgrade", "foo, websocket")
 		w.Header().Set("Connection", "upgrade, keep-alive")
-		w.Header().Set("Sec-Websocket-Accept", computeAcceptKey(challengeKey))
+		w.Header().Set("Sec-Websocket-Accept", ComputeAcceptKey(challengeKey))
 		w.WriteHeader(101)
 	}))
 	defer s.Close()
