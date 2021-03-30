@@ -281,7 +281,19 @@ type Conn struct {
 	newDecompressionReader func(io.Reader) io.ReadCloser
 }
 
-func NewConn(conn net.Conn, isServer bool, compress bool, readBufferSize, writeBufferSize int, writeBufferPool BufferPool, br *bufio.Reader, writeBuf []byte) *Conn {
+func NewConn(
+	conn net.Conn, isServer bool, compress bool,
+	readBufferSize, writeBufferSize int, writeBufferPool BufferPool,
+	br *bufio.Reader, writeBuf []byte,
+) *Conn {
+	return NewConnExt(conn, "", isServer, compress, readBufferSize, writeBufferSize, writeBufferPool, br, writeBuf)
+}
+
+func NewConnExt(
+	conn net.Conn, subp string, isServer bool, compress bool,
+	readBufferSize, writeBufferSize int, writeBufferPool BufferPool,
+	br *bufio.Reader, writeBuf []byte,
+) *Conn {
 	if br == nil {
 		if readBufferSize == 0 {
 			readBufferSize = defaultReadBufferSize
@@ -304,6 +316,7 @@ func NewConn(conn net.Conn, isServer bool, compress bool, readBufferSize, writeB
 	mu := make(chan struct{}, 1)
 	mu <- struct{}{}
 	c := &Conn{
+		subprotocol:            subp,
 		isServer:               isServer,
 		br:                     br,
 		conn:                   conn,
